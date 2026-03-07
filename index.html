@@ -120,6 +120,22 @@
 
     .hero-name span { color: var(--accent); }
 
+    /* TYPING ANIMATION */
+    .typing-wrapper { display: inline; }
+    .typing-cursor {
+      display: inline-block;
+      width: 3px;
+      height: 0.85em;
+      background: var(--accent);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 0.8s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
     .hero-desc {
       max-width: 560px;
       color: var(--muted);
@@ -475,7 +491,7 @@
   <section class="hero">
     <div class="hero-grid"></div>
     <div class="hero-tag">↳ Available for Remote Opportunities</div>
-    <h1 class="hero-name">M. Juniko<br /><span>Dwi Putra</span></h1>
+    <h1 class="hero-name"><span id="typing-name"></span><span class="typing-cursor" id="cursor"></span></h1>
     <p class="hero-desc">
       Fullstack Developer with 5+ years building production-grade B2B platforms and real-time IoT systems serving 100k+ users. Based in Jambi, Indonesia — working remotely.
     </p>
@@ -691,6 +707,53 @@
   </footer>
 
   <script>
+    // Typing animation for hero name
+    const lines = [
+      { text: 'M. Juniko', color: false },
+      { text: 'Dwi Putra,', color: true },
+      { text: 'S.Kom', color: true },
+    ];
+
+    const el = document.getElementById('typing-name');
+    const cursor = document.getElementById('cursor');
+    let lineIdx = 0, charIdx = 0;
+    let fullText = '';
+
+    function buildHTML() {
+      let html = '';
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        const isLast = i === lines.length - 1;
+        if (i < lineIdx) {
+          html += line.color ? `<span style="color:var(--accent)">${line.text}</span>` : line.text;
+          if (!isLast) html += i === 0 ? '<br>' : ' ';
+        } else if (i === lineIdx) {
+          const partial = line.text.slice(0, charIdx);
+          html += line.color ? `<span style="color:var(--accent)">${partial}</span>` : partial;
+        }
+      }
+      return html;
+    }
+
+    function type() {
+      const line = lines[lineIdx];
+      if (charIdx < line.text.length) {
+        charIdx++;
+        el.innerHTML = buildHTML();
+        setTimeout(type, 60);
+      } else if (lineIdx < lines.length - 1) {
+        lineIdx++;
+        charIdx = 0;
+        el.innerHTML = buildHTML();
+        setTimeout(type, 120);
+      } else {
+        cursor.style.display = 'inline-block';
+      }
+    }
+
+    // Start typing after hero fade-in
+    setTimeout(() => { type(); }, 800);
+
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
