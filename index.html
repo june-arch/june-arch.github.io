@@ -126,13 +126,25 @@
 
     .hero-name {
       font-family: var(--font-display);
-      font-weight: 800;
-      font-size: clamp(52px, 8vw, 120px);
-      line-height: 1;
+      font-weight: 700;
+      font-size: clamp(28px, 4vw, 48px);
+      line-height: 1.2;
       letter-spacing: -0.5px;
-      margin-bottom: 32px;
+      margin-bottom: 8px;
       opacity: 0;
       animation: fadeUp 0.7s ease 0.35s forwards;
+    }
+
+    .hero-role {
+      font-family: var(--font-display);
+      font-weight: 400;
+      font-size: clamp(20px, 3vw, 32px);
+      color: var(--accent);
+      letter-spacing: 0px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.5s forwards;
+      min-height: 1.2em;
     }
 
     .hero-name span { color: var(--accent); }
@@ -508,7 +520,10 @@
   <section class="hero">
     <div class="hero-grid"></div>
     <div class="hero-tag">↳ Available for Remote Opportunities</div>
-    <h1 class="hero-name"><span id="typing-name"></span><span class="typing-cursor" id="cursor"></span></h1>
+    <h1 class="hero-name">M. Juniko DWI PUTRA, S.Kom</h1>
+    <div class="hero-role">
+      <span id="typing-role"></span><span class="typing-cursor" id="cursor"></span>
+    </div>
     <p class="hero-desc">
       Fullstack Developer with 5+ years building production-grade B2B platforms and real-time IoT systems serving 100k+ users. Based in Jambi, Indonesia — working remotely.
     </p>
@@ -731,7 +746,7 @@
       'Android Java Developer'
     ];
 
-    const el = document.getElementById('typing-name');
+    const el = document.getElementById('typing-role');
     const cursor = document.getElementById('cursor');
     let roleIdx = 0;
     let charIdx = 0;
@@ -748,7 +763,7 @@
       if (!isDeleting) {
         // Typing
         charIdx++;
-        el.innerHTML = buildHTML(current.slice(0, charIdx));
+        el.textContent = current.slice(0, charIdx);
         cursor.style.display = 'inline-block';
 
         if (charIdx === current.length) {
@@ -761,7 +776,7 @@
       } else {
         // Deleting
         charIdx--;
-        el.innerHTML = buildHTML(current.slice(0, charIdx));
+        el.textContent = current.slice(0, charIdx);
 
         if (charIdx === 0) {
           isDeleting = false;
