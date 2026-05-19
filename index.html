@@ -19,7 +19,7 @@
   <link rel="manifest" href="/site.webmanifest">
   <meta name="theme-color" content="#0a0a0f">
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -31,7 +31,7 @@
       --accent2: #ff6b6b;
       --text: #e8e8f0;
       --muted: #6b6b80;
-      --font-display: 'Syne', sans-serif;
+      --font-display: 'Plus Jakarta Sans', sans-serif;
       --font-mono: 'DM Mono', monospace;
     }
 
@@ -724,52 +724,57 @@
   </footer>
 
   <script>
-    // Typing animation for hero name
-    const lines = [
-      { text: 'M. Juniko', color: false },
-      { text: 'Dwi Putra,', color: true },
-      { text: 'S.Kom', color: true },
+    const roles = [
+      'Full Stack Developer',
+      'Frontend Developer',
+      'Backend Developer',
+      'Android Java Developer'
     ];
 
     const el = document.getElementById('typing-name');
     const cursor = document.getElementById('cursor');
-    let lineIdx = 0, charIdx = 0;
-    let fullText = '';
+    let roleIdx = 0;
+    let charIdx = 0;
+    let isDeleting = false;
+    let loopTimeout;
 
-    function buildHTML() {
-      let html = '';
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
-        const isLast = i === lines.length - 1;
-        if (i < lineIdx) {
-          html += line.color ? `<span style="color:var(--accent)">${line.text}</span>` : line.text;
-          if (!isLast) html += i === 0 ? '<br>' : ' ';
-        } else if (i === lineIdx) {
-          const partial = line.text.slice(0, charIdx);
-          html += line.color ? `<span style="color:var(--accent)">${partial}</span>` : partial;
-        }
-      }
-      return html;
+    function buildHTML(text) {
+      return text;
     }
 
-    function type() {
-      const line = lines[lineIdx];
-      if (charIdx < line.text.length) {
+    function tick() {
+      const current = roles[roleIdx];
+
+      if (!isDeleting) {
+        // Typing
         charIdx++;
-        el.innerHTML = buildHTML();
-        setTimeout(type, 60);
-      } else if (lineIdx < lines.length - 1) {
-        lineIdx++;
-        charIdx = 0;
-        el.innerHTML = buildHTML();
-        setTimeout(type, 120);
-      } else {
+        el.innerHTML = buildHTML(current.slice(0, charIdx));
         cursor.style.display = 'inline-block';
+
+        if (charIdx === current.length) {
+          // Pause at full text, then start deleting
+          isDeleting = true;
+          loopTimeout = setTimeout(tick, 1800);
+          return;
+        }
+        loopTimeout = setTimeout(tick, 80);
+      } else {
+        // Deleting
+        charIdx--;
+        el.innerHTML = buildHTML(current.slice(0, charIdx));
+
+        if (charIdx === 0) {
+          isDeleting = false;
+          roleIdx = (roleIdx + 1) % roles.length;
+          loopTimeout = setTimeout(tick, 400);
+          return;
+        }
+        loopTimeout = setTimeout(tick, 40);
       }
     }
 
     // Start typing after hero fade-in
-    setTimeout(() => { type(); }, 800);
+    setTimeout(() => { tick(); }, 800);
 
     // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
